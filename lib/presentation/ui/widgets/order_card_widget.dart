@@ -12,8 +12,8 @@ class OrderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
         color: Colors.white,
@@ -21,53 +21,17 @@ class OrderCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 15,
-                      backgroundColor: orderColor[order.status],
-                      child: Icon(
-                        Icons.shopping_bag_outlined,
-                        color: Colors.white,
-                        size: 16,
-                      ),
-                    ),
-                    SizedBox(width: 8),
-                    Text(
-                      '# ${order.id}',
-                      style: GoogleFonts.manrope(
-                        textStyle: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Chip(
-                  label: Text('${order.status.toString().split('.').last}'),
-                  labelStyle: GoogleFonts.manrope(
-                    textStyle: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: orderColor[order.status],
-                    ),
-                  ),
-                  backgroundColor: orderColorWithAlpha[order.status],
-                ),
-              ],
-            ),
-          ),
+          CardHeader(order: order),
           Divider(),
           InfoRow(
             prefixText:
                 '${DateFormat.yMd().format(order.createdAt)}, ${DateFormat.Hm().format(order.createdAt)}',
             suffixText: order.location,
+            suffixTextStyle: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w400,
+              color: AppColors.mediumGray,
+            ),
           ),
           InfoRow(
             prefixText: 'Client Name',
@@ -109,17 +73,76 @@ class OrderCard extends StatelessWidget {
   }
 }
 
+class CardHeader extends StatelessWidget {
+  const CardHeader({
+    Key? key,
+    required this.order,
+  }) : super(key: key);
+
+  final Order order;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              CircleAvatar(
+                radius: 15,
+                backgroundColor: orderColor[order.status],
+                child: Icon(
+                  Icons.shopping_bag_outlined,
+                  color: Colors.white,
+                  size: 16,
+                ),
+              ),
+              SizedBox(width: 8),
+              Text(
+                '# ${order.id}',
+                style: GoogleFonts.manrope(
+                  textStyle: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Chip(
+            label: Text('${order.status.toString().split('.').last}'),
+            labelStyle: GoogleFonts.manrope(
+              textStyle: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: orderColor[order.status],
+              ),
+            ),
+            backgroundColor: orderColorWithAlpha[order.status],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class InfoRow extends StatelessWidget {
   const InfoRow({
     Key? key,
     this.prefixText,
     this.suffixText,
     this.backgroundColor,
+    this.suffixTextStyle,
+    this.prefixTextStyle,
   }) : super(key: key);
 
   final String? prefixText;
   final String? suffixText;
   final Color? backgroundColor;
+  final TextStyle? suffixTextStyle;
+  final TextStyle? prefixTextStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -138,15 +161,23 @@ class InfoRow extends StatelessWidget {
             Text(
               '$prefixText',
               style: GoogleFonts.manrope(
-                textStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
-                color: AppColors.mediumGray,
+                textStyle: prefixTextStyle ??
+                    TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                      color: AppColors.mediumGray,
+                    ),
               ),
             ),
             Text(
               '$suffixText',
               style: GoogleFonts.manrope(
-                textStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
-                color: AppColors.superDarkBlue,
+                textStyle: suffixTextStyle ??
+                    TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                      color: AppColors.superDarkBlue,
+                    ),
               ),
             ),
           ],

@@ -63,8 +63,8 @@ class Order {
       id: '13702574',
       createdAt: DateTime.now(),
       clientName: name,
-      clientEmail: '${name.toLowerCase().replaceAll(' ', '.')}@email.com',
-      deliveryCompany: faker.company.name(),
+      clientEmail: '${name.toLowerCase().split(' ').last}@email.com',
+      deliveryCompany: 'DHL',
       trackingCode:
           '${faker.randomGenerator.integer(999, min: 111)}-${faker.randomGenerator.integer(999999, min: 111111)}',
       products: [faker.lorem.word(), faker.lorem.word(), faker.lorem.word()],

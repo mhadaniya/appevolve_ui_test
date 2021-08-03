@@ -5,7 +5,12 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'widgets/widgets.dart';
 
-class ListOrdersPage extends StatelessWidget {
+class ListOrdersPage extends StatefulWidget {
+  @override
+  _ListOrdersPageState createState() => _ListOrdersPageState();
+}
+
+class _ListOrdersPageState extends State<ListOrdersPage> {
   final List<Order> orders = [
     Order.faker(),
     Order.faker(),
@@ -19,6 +24,16 @@ class ListOrdersPage extends StatelessWidget {
     Order.faker()
   ];
 
+  late List<Order> showingOrders;
+
+  @override
+  void initState() {
+    setState(() {
+      showingOrders = orders;
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,28 +43,32 @@ class ListOrdersPage extends StatelessWidget {
         title: Text(
           'Orders',
           style: GoogleFonts.manrope(
-            textStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+            textStyle: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w700,
+            ),
           ),
         ),
         centerTitle: true,
         leading: Icon(
           Icons.menu,
-          size: 28,
+          size: 30,
         ),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 8.0),
+            padding: const EdgeInsets.only(right: 19.0, top: 5),
             child: Stack(
-              alignment: Alignment.center,
+              alignment: AlignmentDirectional.center,
               children: [
                 CircleAvatar(
-                  radius: 14,
+                  radius: 12,
+                  backgroundImage: AssetImage('assets/avatar.png'),
                 ),
                 Positioned(
                   bottom: 18,
-                  right: 5,
+                  right: 2,
                   child: CircleAvatar(
-                    backgroundColor: Colors.green,
+                    backgroundColor: AppColors.turquoise,
                     radius: 3,
                   ),
                 ),
@@ -61,13 +80,19 @@ class ListOrdersPage extends StatelessWidget {
       body: LayoutBuilder(
         builder: (context, viewportConstraints) => ListView(
           children: [
+            SizedBox(height: 16),
             Top(),
-            Divider(color: AppColors.mediumGray),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Divider(color: AppColors.mediumGray),
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
                 children: [
-                  OrderStatusListView(),
+                  OrderStatusListView(
+                    orders: orders,
+                  ),
                   SizedBox(height: 20),
                   ...orders.map((e) => OrderCard(order: e))
                 ],
@@ -117,9 +142,12 @@ class ActionsButtons extends StatelessWidget {
       children: [
         Expanded(
           child: Container(
-            color: Colors.white,
             alignment: Alignment.center,
             height: 40,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(4),
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -133,6 +161,7 @@ class ActionsButtons extends StatelessWidget {
                     textStyle: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
+                      color: AppColors.mediumGray,
                     ),
                   ),
                 )
@@ -145,7 +174,10 @@ class ActionsButtons extends StatelessWidget {
         ),
         Expanded(
           child: Container(
-            color: Colors.white,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(4),
+            ),
             alignment: Alignment.center,
             height: 40,
             child: Row(
@@ -161,6 +193,7 @@ class ActionsButtons extends StatelessWidget {
                     textStyle: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
+                      color: AppColors.mediumGray,
                     ),
                   ),
                 )
@@ -174,9 +207,10 @@ class ActionsButtons extends StatelessWidget {
 }
 
 class OrderStatusListView extends StatelessWidget {
-  const OrderStatusListView({
-    Key? key,
-  }) : super(key: key);
+  final List<Order> orders;
+  final Function? filterBy;
+
+  OrderStatusListView({required this.orders, this.filterBy});
 
   @override
   Widget build(BuildContext context) {
